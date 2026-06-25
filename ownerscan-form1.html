@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>오너스캔 | 피트니스 운영 리스크 자가진단</title>
+<meta name="description" content="내 센터 어디서 새고 있나요? 3분 10문항으로 운영 리스크를 진단하세요.">
+<meta property="og:title" content="오너스캔 | 피트니스 운영 리스크 자가진단">
+<meta property="og:description" content="감으로 버티는 운영이 아닌, 기준 있는 구조를 위해. 3분 · 10문항 · 즉시 결과 확인">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --cream:#F7F4F0;--white:#FFF;--black:#0A0A0A;--charcoal:#2C2C2C;
+  --mid:#5A5550;--muted:#9B958E;--brick:#B5472A;--brick-dark:#8C3520;
+  --brick-tint:#F5EDE9;--border:#E2D9D0;--border-mid:#C8BDB4;
+}
+html,body{height:100%;font-family:'Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--cream);color:var(--black);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+#app{min-height:100vh;display:flex;flex-direction:column;}
+.screen{display:none;flex:1;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+.wordmark{font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--brick);padding:28px 40px;flex-shrink:0;}
+
+/* ── INTRO ── */
+#s-intro{background:var(--cream);}
+.intro-inner{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px 80px;}
+.intro-eyebrow{font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.05em;margin-bottom:24px;}
+.intro-h{font-size:clamp(28px,6vw,46px);font-weight:700;line-height:1.2;letter-spacing:-.025em;margin-bottom:22px;}
+.intro-h em{color:var(--brick);font-style:normal;}
+.intro-body{font-size:16px;color:var(--mid);line-height:1.75;margin-bottom:40px;max-width:380px;}
+.intro-chips{display:flex;align-items:center;gap:8px;margin-bottom:48px;flex-wrap:wrap;}
+.chip{font-size:12px;color:var(--mid);background:var(--white);border:1px solid var(--border);border-radius:100px;padding:5px 12px;}
+.btn-start{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);
+  border:none;border-radius:14px;padding:17px 30px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s,transform .1s;}
+.btn-start:hover{background:var(--charcoal);}
+.btn-start:active{transform:scale(.98);}
+.btn-start svg{transition:transform .2s;}
+.btn-start:hover svg{transform:translateX(3px);}
+
+/* ── QUESTION ── */
+#s-q{background:var(--white);}
+.q-topbar{padding:0 40px;flex-shrink:0;}
+.q-progress{height:2px;background:var(--border);}
+.q-progress-fill{height:100%;background:var(--brick);transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+.q-bar{display:flex;align-items:center;justify-content:space-between;padding:20px 0 16px;}
+.q-counter{font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.08em;}
+.btn-back{background:transparent;border:none;color:var(--muted);font-size:13px;font-family:inherit;
+  cursor:pointer;padding:0;display:flex;align-items:center;gap:6px;transition:color .15s;}
+.btn-back:hover{color:var(--charcoal);}
+.q-content{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px;overflow:hidden;}
+.q-inner{transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;}
+.q-inner.out-l{transform:translateX(-40px);opacity:0;pointer-events:none;}
+.q-inner.out-r{transform:translateX(40px);opacity:0;pointer-events:none;}
+.q-inner.in-r{transform:translateX(40px);opacity:0;}
+.q-inner.in-l{transform:translateX(-40px);opacity:0;}
+.q-cat{font-size:10px;font-weight:700;letter-spacing:.15em;color:var(--brick);margin-bottom:18px;text-transform:uppercase;}
+.q-txt{font-size:clamp(18px,3.5vw,26px);font-weight:600;line-height:1.45;letter-spacing:-.015em;color:var(--black);margin-bottom:48px;}
+.scale-row{display:flex;gap:10px;margin-bottom:14px;}
+.s-btn{flex:1;max-width:80px;aspect-ratio:1;border:1.5px solid var(--border);border-radius:14px;
+  background:var(--cream);font-size:18px;font-weight:500;font-family:inherit;color:var(--charcoal);
+  cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.s-btn:hover:not(.sel){border-color:var(--brick);color:var(--brick);background:var(--brick-tint);}
+.s-btn.sel{background:var(--brick);border-color:var(--brick);color:var(--white);transform:scale(1.08);}
+.scale-labels{display:flex;justify-content:space-between;}
+.scale-lbl{font-size:12px;color:var(--muted);}
+.q-footer{padding:24px 40px 44px;display:flex;justify-content:flex-end;flex-shrink:0;}
+.btn-next{display:inline-flex;align-items:center;gap:8px;background:var(--black);color:var(--white);
+  border:none;border-radius:100px;padding:14px 28px;font-size:14px;font-weight:600;font-family:inherit;
+  cursor:pointer;transition:background .15s,opacity .2s,transform .1s;}
+.btn-next:hover{background:var(--charcoal);}
+.btn-next:active{transform:scale(.98);}
+.btn-next.dim{opacity:.3;pointer-events:none;}
+
+/* ── CALCULATING ── */
+#s-calc{background:var(--cream);align-items:center;justify-content:center;}
+.spin{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--brick);
+  border-radius:50%;animation:spin .9s linear infinite;margin-bottom:20px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.calc-txt{font-size:15px;color:var(--mid);}
+
+/* ── RESULT ── */
+#s-result{background:var(--white);}
+.result-inner{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px 60px;max-width:560px;}
+.r-score-num{font-size:72px;font-weight:700;letter-spacing:-.04em;line-height:1;}
+.r-score-denom{font-size:14px;color:var(--muted);margin-top:4px;margin-bottom:20px;}
+.r-badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.05em;
+  padding:6px 14px;border-radius:100px;margin-bottom:20px;}
+.r-title{font-size:clamp(20px,4vw,28px);font-weight:700;letter-spacing:-.02em;line-height:1.35;
+  margin-bottom:24px;white-space:pre-line;}
+.weak-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px;}
+.weak-chip{font-size:12px;padding:5px 11px;border-radius:100px;background:var(--cream);
+  border:1px solid var(--border);color:var(--mid);}
+.r-msgs{margin-bottom:32px;display:flex;flex-direction:column;gap:12px;}
+.r-msg{font-size:15px;line-height:1.75;color:var(--charcoal);padding-left:16px;
+  border-left:2px solid var(--border);border-radius:0;}
+.r-msg.hi{border-left-color:var(--brick);color:var(--black);font-weight:500;}
+.btn-cta-main{display:flex;align-items:center;justify-content:center;gap:10px;border:none;
+  border-radius:16px;padding:18px 28px;font-size:15px;font-weight:700;font-family:inherit;
+  cursor:pointer;transition:filter .15s,transform .1s;color:var(--white);width:100%;max-width:340px;}
+.btn-cta-main:hover{filter:brightness(1.12);}
+.btn-cta-main:active{transform:scale(.98);}
+.r-note{font-size:12px;color:var(--muted);margin-top:10px;max-width:340px;}
+.btn-restart{background:transparent;border:none;font-family:inherit;font-size:13px;
+  color:var(--muted);cursor:pointer;padding:0;margin-top:24px;}
+.btn-restart:hover{color:var(--mid);}
+
+/* ── LEAD CAPTURE ── */
+#s-lead{background:var(--cream);}
+.lead-inner{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 40px 80px;max-width:520px;}
+.lead-h{font-size:clamp(22px,4vw,30px);font-weight:700;line-height:1.35;letter-spacing:-.02em;margin-bottom:10px;}
+.lead-sub{font-size:15px;color:var(--mid);line-height:1.7;margin-bottom:36px;}
+.form-field{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:600;color:var(--mid);letter-spacing:.04em;margin-bottom:7px;display:block;}
+.form-inp{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:12px;
+  padding:14px 16px;font-size:15px;font-family:inherit;color:var(--black);outline:none;
+  transition:border-color .15s;-webkit-appearance:none;}
+.form-inp:focus{border-color:var(--brick);}
+.form-inp::placeholder{color:var(--muted);}
+select.form-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M3 5l4 4 4-4' stroke='%239B958E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;}
+.sit-row{display:flex;gap:10px;}
+.sit-btn{flex:1;padding:13px 8px;border:1.5px solid var(--border);border-radius:12px;
+  background:var(--white);font-size:14px;font-weight:500;font-family:inherit;color:var(--mid);
+  cursor:pointer;transition:all .15s;text-align:center;}
+.sit-btn:hover{border-color:var(--brick-dark);color:var(--brick-dark);}
+.sit-btn.on{background:var(--brick-tint);border-color:var(--brick);color:var(--brick-dark);font-weight:600;}
+.lead-actions{display:flex;flex-direction:column;gap:10px;margin-top:28px;}
+.btn-submit{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--black);
+  color:var(--white);border:none;border-radius:14px;padding:17px 28px;font-size:15px;
+  font-weight:600;font-family:inherit;cursor:pointer;transition:background .15s,transform .1s;}
+.btn-submit:hover{background:var(--charcoal);}
+.btn-submit:active{transform:scale(.98);}
+.btn-submit.dim{opacity:.4;pointer-events:none;}
+.btn-skip{background:transparent;border:none;font-family:inherit;font-size:13px;color:var(--muted);
+  cursor:pointer;padding:8px 0;transition:color .15s;}
+.btn-skip:hover{color:var(--mid);}
+.privacy-note{font-size:11px;color:var(--muted);margin-top:14px;line-height:1.6;}
+
+/* ── DONE ── */
+#s-done{background:var(--cream);align-items:center;justify-content:center;}
+.done-inner{display:flex;flex-direction:column;align-items:center;padding:40px;text-align:center;max-width:400px;}
+.done-icon{width:56px;height:56px;background:var(--brick-tint);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin-bottom:24px;}
+.done-h{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-bottom:12px;}
+.done-body{font-size:15px;color:var(--mid);line-height:1.75;margin-bottom:32px;}
+.btn-kakao{display:flex;align-items:center;justify-content:center;gap:10px;
+  background:#FEE500;color:#000;border:none;border-radius:14px;padding:16px 28px;
+  font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:filter .15s,transform .1s;width:100%;}
+.btn-kakao:hover{filter:brightness(.95);}
+.btn-kakao:active{transform:scale(.98);}
+
+@media(max-width:480px){
+  .wordmark{padding:22px 24px;}
+  .intro-inner,.lead-inner,.result-inner{padding-left:24px;padding-right:24px;}
+  .q-topbar{padding:0 24px;}
+  .q-content{padding:0 24px;}
+  .q-footer{padding:20px 24px 36px;}
+  .s-btn{max-width:62px;font-size:16px;border-radius:12px;}
+  .r-score-num{font-size:58px;}
+  .sit-btn{font-size:13px;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- INTRO -->
+<div class="screen active" id="s-intro">
+  <div class="wordmark">OWNERSCAN</div>
+  <div class="intro-inner">
+    <p class="intro-eyebrow">피트니스 운영 리스크 자가진단</p>
+    <h1 class="intro-h">지금 내 센터,<br><em>어디서</em> 새고 있나요?</h1>
+    <p class="intro-body">감으로 버티는 운영이 아닌,<br>기준 있는 구조를 만들기 위한 첫 번째 진단.</p>
+    <div class="intro-chips">
+      <span class="chip">3분 소요</span>
+      <span class="chip">10문항</span>
+      <span class="chip">즉시 결과 확인</span>
+      <span class="chip">무료</span>
+    </div>
+    <button class="btn-start" onclick="startQ()">
+      진단 시작하기
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- QUESTION -->
+<div class="screen" id="s-q">
+  <div class="q-topbar">
+    <div class="q-progress"><div class="q-progress-fill" id="pfill"></div></div>
+    <div class="q-bar">
+      <button class="btn-back" id="bbk" onclick="goBack()" style="opacity:0;pointer-events:none;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M7 3L3 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        이전
+      </button>
+      <span class="q-counter" id="qctr">01 / 10</span>
+    </div>
+  </div>
+  <div class="q-content">
+    <div class="q-inner" id="qin">
+      <p class="q-cat" id="qcat"></p>
+      <p class="q-txt" id="qtxt"></p>
+      <div class="scale-row" id="sbts"></div>
+      <div class="scale-labels">
+        <span class="scale-lbl" id="slo"></span>
+        <span class="scale-lbl" id="shi"></span>
+      </div>
+    </div>
+  </div>
+  <div class="q-footer">
+    <button class="btn-next dim" id="bnx" onclick="nextQ()">
+      다음
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- CALCULATING -->
+<div class="screen" id="s-calc">
+  <div class="wordmark">OWNERSCAN</div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div class="spin"></div>
+    <p class="calc-txt">운영 리스크 분석 중...</p>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="s-result">
+  <div class="wordmark">OWNERSCAN</div>
+  <div class="result-inner">
+    <div class="r-score-num" id="rsn"></div>
+    <div class="r-score-denom">/ 50점 만점</div>
+    <div class="r-badge" id="rbg"></div>
+    <div class="r-title" id="rtl"></div>
+    <div class="weak-row" id="wkc"></div>
+    <div class="r-msgs" id="rmsg"></div>
+    <button class="btn-cta-main" id="rcta" onclick="goLead()">
+      카카오톡으로 상담 문의하기
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="r-note">담당자가 직접 연락드립니다. 부담 없이 문의해 주세요.</p>
+    <button class="btn-restart" onclick="restart()">처음부터 다시하기</button>
+  </div>
+</div>
+
+<!-- LEAD CAPTURE -->
+<div class="screen" id="s-lead">
+  <div class="wordmark">OWNERSCAN</div>
+  <div class="lead-inner">
+    <h2 class="lead-h">연락처를 남겨주시면<br>직접 연락드릴게요.</h2>
+    <p class="lead-sub">진단 결과를 바탕으로 맞춤 상담을 드립니다.<br>부담 없이 남겨주세요.</p>
+
+    <div class="form-field">
+      <label class="form-label" for="f-name">이름</label>
+      <input class="form-inp" type="text" id="f-name" placeholder="홍길동" oninput="checkForm()">
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="f-phone">연락처</label>
+      <input class="form-inp" type="tel" id="f-phone" placeholder="010-0000-0000" oninput="fmtPhone(this);checkForm()">
+    </div>
+    <div class="form-field">
+      <label class="form-label" for="f-age">나이대</label>
+      <select class="form-inp" id="f-age" onchange="checkForm()">
+        <option value="">선택해 주세요</option>
+        <option value="20대">20대</option>
+        <option value="30대">30대</option>
+        <option value="40대">40대</option>
+        <option value="50대 이상">50대 이상</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">현재 상황</label>
+      <div class="sit-row">
+        <button class="sit-btn" id="sit-0" onclick="setSit(0)">예비 창업자</button>
+        <button class="sit-btn" id="sit-1" onclick="setSit(1)">센터 운영 중</button>
+      </div>
+    </div>
+
+    <div class="lead-actions">
+      <button class="btn-submit dim" id="bsub" onclick="submitLead()">
+        카카오톡으로 상담 연결하기
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn-skip" onclick="skipToKakao()">건너뛰고 카카오톡 바로 이동</button>
+    </div>
+    <p class="privacy-note">입력하신 정보는 상담 목적으로만 사용되며 외부에 제공되지 않습니다.</p>
+  </div>
+</div>
+
+<!-- DONE -->
+<div class="screen" id="s-done">
+  <div class="wordmark">OWNERSCAN</div>
+  <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;">
+    <div class="done-inner">
+      <div class="done-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#B5472A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h2 class="done-h">접수 완료됐습니다.</h2>
+      <p class="done-body">빠른 시간 안에 카카오톡으로 연락드릴게요.<br>아래 버튼으로 먼저 문의하셔도 됩니다.</p>
+      <button class="btn-kakao" onclick="openKakao()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><ellipse cx="10" cy="9" rx="9" ry="7.5" fill="#000"/><path d="M6 9c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2s-.9 2-2 2H9l-2 2V9z" fill="#FEE500"/></svg>
+        카카오톡 채널 바로가기
+      </button>
+    </div>
+  </div>
+</div>
+
+</div>
+<script>
+/* ── CONFIG: 여기만 수정하세요 ── */
+var KAKAO_URL = 'https://open.kakao.com/o/s6IKh8Ai';
+var SHEETS_URL = 'YOUR_APPS_SCRIPT_URL';
+/* ─────────────────────────── */
+
+var QS=[
+  {cat:'고객 정의',q:'"우리 센터의 주요 고객"을 한 문장으로 설명할 수 있다',lo:'모호함',hi:'매우 명확'},
+  {cat:'상품 구조',q:'현재 상품(PT·회원권 등)의 가격과 구성 기준이 명확하다',lo:'감으로 정함',hi:'기준 있음'},
+  {cat:'신규 유입',q:'이번 달 신규 상담 목표와 실제 유입을 파악하고 있다',lo:'파악 못함',hi:'정확히 앎'},
+  {cat:'전환 구조',q:'상담에서 계약까지 정해진 흐름과 스크립트가 있다',lo:'즉흥적',hi:'체계적'},
+  {cat:'유지율',q:'재등록률과 주요 이탈 시점을 알고 있다',lo:'모름',hi:'정확히 앎'},
+  {cat:'고정비',q:'월 고정비 총액과 손익분기 매출을 바로 말할 수 있다',lo:'모름',hi:'정확히 앎'},
+  {cat:'현금흐름',q:'다음 달 예상 매출과 지출을 미리 계획하고 있다',lo:'없음',hi:'항상 함'},
+  {cat:'운영 의존도',q:'대표 없이도 2~3일 센터가 정상 운영될 수 있다',lo:'불가능',hi:'가능'},
+  {cat:'운영 시스템',q:'예약·결제·회원 관리가 하나의 흐름으로 정리되어 있다',lo:'제각각',hi:'통합됨'},
+  {cat:'방향성',q:'3개월 후 어떤 상태가 되고 싶은지 구체적으로 그려져 있다',lo:'막막함',hi:'선명함'}
+];
+var RS=[
+  {min:40,badge:'안정 구간',bbg:'#E8F5EE',btc:'#1A6B3F',ac:'#1A6B3F',
+   title:'구조가 잡혀 있습니다.\n이제 성장을 준비할 때.',
+   msgs:[
+     {t:'전반적인 운영 기준이 갖춰져 있습니다.',hi:false},
+     {t:'지금 구조로 매장을 하나 더 낼 수 있는가, 직원을 뽑아도 흔들리지 않는 체계가 있는가 — 이걸 같이 봐야 할 시점입니다.',hi:true}
+   ]},
+  {min:30,badge:'주의 구간',bbg:'#FEF5DC',btc:'#7A5500',ac:'#A07800',
+   title:'지금이 딱\n정비할 타이밍입니다.',
+   msgs:[
+     {t:'기본기는 어느 정도 갖춰져 있습니다.',hi:false},
+     {t:'주의 구간이 사실 가장 위험합니다. "그럭저럭 돌아가고 있어서" 문제를 방치하게 됩니다.',hi:true},
+     {t:'지금 작게 새는 곳을 잡아두지 않으면 다음 비수기에 한 번 흔들립니다.',hi:false}
+   ]},
+  {min:20,badge:'위험 구간',bbg:'#FDEEE8',btc:'#8C3520',ac:'#B5472A',
+   title:'핵심 운영 기준이\n흔들리고 있습니다.',
+   msgs:[
+     {t:'"바빠서 못 챙겼어요." 이 점수대에서 가장 많이 듣는 말입니다.',hi:false},
+     {t:'그게 쌓이다가 어느 날 매출이 꺾입니다. 전부 고칠 필요 없습니다. 무엇부터 손봐야 하는지 우선순위 하나만 잡으면 됩니다.',hi:true}
+   ]},
+  {min:0,badge:'긴급 진단 필요',bbg:'#FAE8E8',btc:'#8B1A1A',ac:'#8B1A1A',
+   title:'지금 여러 곳에서\n동시에 새고 있습니다.',
+   msgs:[
+     {t:'센터는 한 번에 망하지 않습니다. 조용히 샙니다.',hi:true},
+     {t:'"어디서 새는지 모르고 버티다가" 한 번에 무너지는 패턴입니다.',hi:false},
+     {t:'지금 필요한 건 전부 고치는 게 아닙니다. 가장 크게 새는 곳 하나를 먼저 찾는 겁니다.',hi:false}
+   ]}
+];
+
+var cur=0,ans=new Array(10).fill(0),sitSel=-1,resultData={};
+
+function show(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+function startQ(){cur=0;ans=new Array(10).fill(0);show('s-q');renderQ(cur,'right');}
+
+function renderQ(i,dir){
+  var q=QS[i];
+  document.getElementById('pfill').style.width=Math.round(i/10*100)+'%';
+  document.getElementById('qctr').textContent=String(i+1).padStart(2,'0')+' / 10';
+  var bk=document.getElementById('bbk');
+  bk.style.opacity=i>0?'1':'0';bk.style.pointerEvents=i>0?'auto':'none';
+  var qin=document.getElementById('qin');
+  var oc=dir==='right'?'out-l':'out-r';
+  var ic=dir==='right'?'in-r':'in-l';
+  qin.classList.add(oc);
+  setTimeout(function(){
+    qin.classList.remove(oc);
+    document.getElementById('qcat').textContent=q.cat;
+    document.getElementById('qtxt').textContent=q.q;
+    document.getElementById('slo').textContent='1 → '+q.lo;
+    document.getElementById('shi').textContent=q.hi+' ← 5';
+    var sb=document.getElementById('sbts');sb.innerHTML='';
+    for(var v=1;v<=5;v++){
+      var b=document.createElement('button');
+      b.className='s-btn'+(ans[i]===v?' sel':'');
+      b.textContent=v;
+      (function(idx,val){b.onclick=function(){pick(idx,val);};})(i,v);
+      sb.appendChild(b);
+    }
+    var nx=document.getElementById('bnx');nx.classList.toggle('dim',ans[i]===0);
+    qin.classList.add(ic);void qin.offsetWidth;
+    requestAnimationFrame(function(){requestAnimationFrame(function(){qin.classList.remove(ic);});});
+  },220);
+}
+
+function pick(i,v){
+  ans[i]=v;
+  document.querySelectorAll('.s-btn').forEach(function(b,j){b.classList.toggle('sel',j+1===v);});
+  document.getElementById('bnx').classList.remove('dim');
+  if(i<9){setTimeout(function(){nextQ();},380);}
+}
+
+function nextQ(){if(ans[cur]===0)return;if(cur<9){cur++;renderQ(cur,'right');}else{show('s-calc');setTimeout(showResult,1500);}}
+function goBack(){if(cur>0){cur--;renderQ(cur,'left');}}
+
+function showResult(){
+  var total=ans.reduce(function(a,b){return a+b;},0);
+  var r=RS.find(function(x){return total>=x.min;});
+  var weak=ans.map(function(v,i){return{v:v,cat:QS[i].cat};}).sort(function(a,b){return a.v-b.v;}).slice(0,3).map(function(x){return x.cat;});
+  resultData={total:total,range:r.badge,weak:weak.join(', '),scores:ans.join(',')};
+  document.getElementById('rsn').textContent=total;
+  document.getElementById('rsn').style.color=r.ac;
+  var bg=document.getElementById('rbg');bg.textContent=r.badge;bg.style.background=r.bbg;bg.style.color=r.btc;
+  document.getElementById('rtl').textContent=r.title;
+  document.getElementById('wkc').innerHTML=weak.map(function(c){return'<span class="weak-chip">'+c+'</span>';}).join('');
+  document.getElementById('rmsg').innerHTML=r.msgs.map(function(m){return'<p class="r-msg'+(m.hi?' hi':'')+'">'+ m.t+'</p>';}).join('');
+  var ct=document.getElementById('rcta');ct.style.background=r.ac;
+  document.getElementById('pfill').style.width='100%';
+  show('s-result');
+}
+
+function goLead(){show('s-lead');}
+
+function fmtPhone(el){
+  var v=el.value.replace(/\D/g,'');
+  if(v.length<=3)el.value=v;
+  else if(v.length<=7)el.value=v.slice(0,3)+'-'+v.slice(3);
+  else el.value=v.slice(0,3)+'-'+v.slice(3,7)+'-'+v.slice(7,11);
+}
+
+function setSit(i){
+  sitSel=i;
+  document.querySelectorAll('.sit-btn').forEach(function(b,j){b.classList.toggle('on',j===i);});
+  checkForm();
+}
+
+function checkForm(){
+  var ok=document.getElementById('f-name').value.trim()&&
+         document.getElementById('f-phone').value.replace(/\D/g,'').length>=10&&
+         document.getElementById('f-age').value&&sitSel>=0;
+  document.getElementById('bsub').classList.toggle('dim',!ok);
+}
+
+function submitLead(){
+  var name=document.getElementById('f-name').value.trim();
+  var phone=document.getElementById('f-phone').value.trim();
+  var age=document.getElementById('f-age').value;
+  var sit=['예비 창업자','센터 운영 중'][sitSel];
+  var payload={timestamp:new Date().toISOString(),name:name,phone:phone,age:age,situation:sit,
+    total:resultData.total,range:resultData.range,weak:resultData.weak,scores:resultData.scores};
+  if(SHEETS_URL!=='YOUR_APPS_SCRIPT_URL'){
+    fetch(SHEETS_URL+'?'+new URLSearchParams(payload)).catch(function(){});
+  }
+  show('s-done');
+}
+
+function skipToKakao(){openKakao();}
+function openKakao(){window.open(KAKAO_URL,'_blank');}
+function restart(){cur=0;ans=new Array(10).fill(0);sitSel=-1;resultData={};show('s-intro');}
+</script>
+</body>
+</html>
