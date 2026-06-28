@@ -309,10 +309,10 @@ select.form-inp{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg x
 
 </div>
 <script>
-/* ── CONFIG: 여기만 수정하세요 ── */
+/* ── CONFIG ── */
 var KAKAO_URL = 'https://open.kakao.com/o/s6IKh8Ai';
-var SHEETS_URL = 'YOUR_APPS_SCRIPT_URL';
-/* ─────────────────────────── */
+var FORMSPREE_URL = 'https://formspree.io/f/xlgynwbq';
+/* ─────────── */
 
 var QS=[
   {cat:'고객 정의',q:'"우리 센터의 주요 고객"을 한 문장으로 설명할 수 있다',lo:'모호함',hi:'매우 명확'},
@@ -444,11 +444,22 @@ function submitLead(){
   var phone=document.getElementById('f-phone').value.trim();
   var age=document.getElementById('f-age').value;
   var sit=['예비 창업자','센터 운영 중'][sitSel];
-  var payload={timestamp:new Date().toISOString(),name:name,phone:phone,age:age,situation:sit,
-    total:resultData.total,range:resultData.range,weak:resultData.weak,scores:resultData.scores};
-  if(SHEETS_URL!=='YOUR_APPS_SCRIPT_URL'){
-    fetch(SHEETS_URL+'?'+new URLSearchParams(payload)).catch(function(){});
-  }
+  var payload={
+    name:name,
+    phone:phone,
+    age:age,
+    situation:sit,
+    total:resultData.total,
+    range:resultData.range,
+    weak:resultData.weak,
+    scores:resultData.scores,
+    timestamp:new Date().toISOString()
+  };
+  fetch(FORMSPREE_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify(payload)
+  }).catch(function(){});
   show('s-done');
 }
 
