@@ -947,9 +947,8 @@ function openKakao() {
     detail: detailLines.join(' / ')
   });
 
-  // 새 탭: Apps Script가 데이터 저장 후 카카오로 리다이렉트
-  window.open(SCRIPT_URL + '?' + params.toString(), '_blank');
-  copyResult(false);
+  // 현재 창에서 Apps Script로 이동 → 완료 페이지 표시
+  window.location.href = SCRIPT_URL + '?' + params.toString();
 }
 
 function copyResult(showMessage = true) {
